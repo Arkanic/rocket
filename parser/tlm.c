@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -38,7 +39,7 @@ int checkimg(char *folder) {
     }
 
     if(photos != highest) {
-        printf("Frames do not match up!\nFinal frame name is different to the total number of frames.\n");
+        printf("\nFrames do not match up!\nFinal frame name is different to the total number of frames.\n");
         return 3;
     }
 
@@ -48,7 +49,24 @@ int checkimg(char *folder) {
     return 0;
 }
 
-int checkfs(char *folder) {
+int checkffmpeg(void) {
+    FILE *fp = popen("which ffmpeg", "r");
+    if(!fp) {
+        printf("\nFailed to run ffmpeg command!\n(this is a shell, not ffmpeg issue)\n");
+        return 4;
+    }
+
+    char path[1036] = "\0";
+    fgets(path, sizeof(path), fp);
+    if(strlen(path) == 0) {
+        printf("\nFFMPEG is not installed!\n");
+        return 5;
+    }
+
+    return 0;
+}
+
+int check(char *folder) {
     printf("Beginning checks...\n");
     DIR *dir = opendir(folder);
     if(!dir) {
@@ -62,12 +80,27 @@ int checkfs(char *folder) {
     
     closedir(dir);
 
-    printf("Checking images...");
+    printf("Checking images... ");
     int checkimgResult = checkimg(folder);
     if(checkimgResult != 0) return checkimgResult;
-    printf(" GOOD\n");
+    printf("GOOD\n");
+
+    printf("Checking ffmpeg... ");
+    int checkffmpegResult = checkffmpeg();
+    if(checkffmpegResult != 0) return checkffmpegResult;
+    printf("GOOD\n");
 
     printf("Checks done.\n");
+    return 0;
+}
+
+int processimg(char *folder) {
+    char command[256];
+    sprintf(command, "ffmpeg -i %s/frames/frame-%%d.jpg video.mp4", folder);
+    printf("Starting ffmpeg...\n");
+    system(command);
+    printf("ffmpeg finished.\n");
+
     return 0;
 }
 
@@ -84,6 +117,13 @@ int main(int argc, char *argv[]) {
     if(folder[strlen(folder) - 1] == '/') folder[strlen(folder) - 1] = '\0';
 
 
-    int checkfsResult = checkfs(folder);
+    int checkfsResult = check(folder);
     if(checkfsResult != 0) return checkfsResult;
+
+    // turn images into video
+    printf("\nConverting video frames to video...\n");
+    int processimgResult = processimg(folder);
+    if(processimgResult != 0) return processimgResult;
+    printf("Finished converting video.\n");
+    
 }
