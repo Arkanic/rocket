@@ -24,6 +24,14 @@ int checkimg(char *folder) {
     char *fn = strdup(folder);
     strcat(fn, "/frames");
     DIR *dir = opendir(fn);
+    if(!dir) {
+        if(errno == ENOENT) {
+            printf("\nFrames directory does not exist!\n");
+        } else {
+            printf("\nFailed to open frames directory!\n");
+        }
+        return 2;
+    }
 
     struct dirent *ep;
     int photos = 0;
