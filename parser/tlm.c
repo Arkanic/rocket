@@ -104,7 +104,7 @@ int check(char *folder) {
 
 int processimg(char *folder) {
     char command[256];
-    sprintf(command, "ffmpeg -i %s/frames/frame-%%d.jpg video.mp4", folder);
+    sprintf(command, "ffmpeg -framerate 12 -i %s/frames/frame-%%d.jpg video.mp4", folder);
     printf("Starting ffmpeg...\n");
     system(command);
     printf("ffmpeg finished.\n");
