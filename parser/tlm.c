@@ -74,6 +74,8 @@ int processdat(char *folder) {
     }
 
     free(foldern);
+
+    return 0;
 }
 
 int processimg(char *folder, int framerate) {
