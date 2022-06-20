@@ -1,3 +1,6 @@
 parser/tlm
+parser/ll_test
+*.o
+
 sample
 result

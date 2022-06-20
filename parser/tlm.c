@@ -6,6 +6,14 @@
 #include <string.h>
 #include <stdlib.h>
 
+struct datframe {
+    unsigned long long millis;
+    float framerate;
+    double xx;
+    double yx;
+    double zx;
+};
+
 void trimend(char *str) {
     str[strlen(str) - 1] = '\0';
 }
