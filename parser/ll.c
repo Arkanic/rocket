@@ -118,3 +118,15 @@ int ll_getlist(struct ll_list *lp, struct ll_item ***list) {
 
     return length;
 }
+
+void ll_freeall(struct ll_list *lp) {
+    struct ll_item *current = lp->head;
+    while(current != NULL) {
+        struct ll_item *temp = current->next;
+        free(current->item);
+        free(current);
+        current = temp;
+    }
+
+    free(lp);
+}

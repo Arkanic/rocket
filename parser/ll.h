@@ -28,3 +28,5 @@ struct ll_item *ll_delete(struct ll_list *lp, unsigned long long key);
 void ll_sort(struct ll_list *lp);
 
 int ll_getlist(struct ll_list *lp, struct ll_item ***list);
+
+void ll_freeall(struct ll_list *lp);

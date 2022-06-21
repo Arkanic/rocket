@@ -3,6 +3,15 @@
 
 #include "ll.h"
 
+void printl(struct ll_item **list, int len) {
+    printf("[");
+    for(int i = 0; i < len; i++) {
+        struct ll_item *item = list[i];
+        printf("%d ", *(int *)(item->item));
+    }
+    printf("]\n");
+}
+
 int main(void) {
     struct ll_list *ll = ll_create();
 
@@ -14,13 +23,20 @@ int main(void) {
 
     struct ll_item **list = NULL;
     int listlen = ll_getlist(ll, &list);
-
     printf("static list len: %d\n", listlen);
-    for(int i = 0; i < listlen; i++) {
-        struct ll_item *item = list[i];
-        printf("%d ", *(int *)(item->item));
-    }
-    printf("\n");
+    printl(list, listlen);
+    free(list);
+
+    ll_sort(ll);
+    
+    listlen = ll_getlist(ll, &list);
+    printl(list, listlen);
+    free(list);
+
+    struct ll_item *fifty = ll_find(ll, 50);
+    printf("found %llu\n", *(unsigned long long *)fifty->item);
+
+    ll_freeall(ll);
 
     return 0;
 }
