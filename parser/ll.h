@@ -11,6 +11,8 @@ struct ll_item {
     struct ll_item *next;
 };
 
+struct ll_list *ll_create(void);
+
 void ll_ifirst(struct ll_list *lp, unsigned long long key, void *data);
 
 struct ll_item *ll_dfirst(struct ll_list *lp);

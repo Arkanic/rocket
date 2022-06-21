@@ -2,6 +2,14 @@
 #include <stdbool.h>
 #include "ll.h"
 
+struct ll_list *ll_create(void) {
+    struct ll_list *ll = (struct ll_list *)malloc(sizeof(struct ll_list));
+    ll->current = NULL;
+    ll->head = NULL;
+
+    return ll;
+}
+
 void ll_ifirst(struct ll_list *lp, unsigned long long key, void *data) {
     struct ll_item *link = (struct ll_item *)malloc(sizeof(struct ll_item));
 
