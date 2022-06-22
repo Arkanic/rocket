@@ -9,14 +9,7 @@
 #include <stdlib.h>
 
 #include "ll.h"
-
-struct datframe {
-    unsigned long long millis;
-    float framerate;
-    double xx;
-    double yx;
-    double zx;
-};
+#include "tlm.h"
 
 void trimend(char *str) {
     str[strlen(str) - 1] = '\0';
@@ -36,6 +29,7 @@ bool swith(char *str, char *substr) {
 }
 
 int processdat(char *folder, struct ll_list *ll) {
+    printf("Processing data...\n");
     char *foldern;
     asprintf(&foldern, "%s/dat", folder);
 
@@ -115,6 +109,21 @@ int processimg(char *folder, int framerate) {
     return 0;
 }
 
+int savejson(char *folder, char *json) {
+    printf("Saving JSON...\n");
+    char *path;
+    asprintf(&path, "%s/telemetry.json", folder);
+    FILE *fp = fopen(path, "wb");
+    if(fp == NULL) return 1;
+
+    fprintf(fp, "%s", json);
+
+    fclose(fp);
+    free(path);
+
+    return 0;
+}
+
 int main(int argc, char *argv[]) {
     if(argc < 2) {
         printf("Usage: ./tlm <FOLDER>\nWhere FOLDER is the copied data from the flight\n");
@@ -130,14 +139,9 @@ int main(int argc, char *argv[]) {
     struct ll_list *ll = ll_create();
     processdat(folder, ll);
 
-    struct ll_item **list;
-    int len = ll_getlist(ll, &list);
-    for(int i = 0; i < len; i++) {
-        struct ll_item *item = list[i];
-        struct datframe *dat = (struct datframe *)item->item;
-
-        printf("millis: %llu framerate: %f\n", dat->millis, dat->framerate);
-    }
+    char *json = datlltoa(ll);
+    savejson(folder, json);
+    free(json);
 
     ll_freeall(ll);
 

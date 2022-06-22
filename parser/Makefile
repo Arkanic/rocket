@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-O3 -std=gnu99 -Wno-unused-result
-TLMOUT=ll.o tlm.o
+TLMOUT=ll.o json.o tlm.o
 LLTESTOUT=ll.o ll_test.o
 
 all: tlm
