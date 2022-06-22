@@ -1,3 +1,6 @@
+// simple linked list implementation
+// keys are in the format unsigned long long (so millis works as keys)
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include "ll.h"
