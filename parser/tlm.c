@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "ll.h"
+
 struct datframe {
     unsigned long long millis;
     float framerate;
@@ -31,7 +33,7 @@ bool swith(char *str, char *substr) {
     return startsWith;
 }
 
-int processdat(char *folder) {
+int processdat(char *folder, struct ll_list *ll) {
     char *foldern = strdup(folder);
     strcat(foldern, "/dat");
     DIR *dir = opendir(foldern);
@@ -70,7 +72,20 @@ int processdat(char *folder) {
 
             for(int i = 0; i < 2; i++) free(rawparts[i]);
 
-            printf("%s: %s\n", data[0], data[1]);
+            struct datframe *dat = (struct datframe *)malloc(sizeof(struct datframe));
+
+            unsigned long long millis;
+            sscanf(ep->d_name, "dat-%llu.txt", &millis);
+            dat->millis = millis;
+
+            if(strcmp(data[0], "framerate") == 0) {
+                float framerate;
+                sscanf(data[1], "%f", &framerate);
+
+                dat->framerate = framerate;
+            }
+
+            ll_ifirst(ll, millis, dat);
 
             free(data[0]);
             free(data[1]);
@@ -80,6 +95,8 @@ int processdat(char *folder) {
         if(line) free(line);
         free(filen);
     }
+
+    ll_sort(ll);
 
     free(foldern);
 
@@ -108,7 +125,19 @@ int main(int argc, char *argv[]) {
     // if pathname ends with /
     if(folder[strlen(folder) - 1] == '/') trimend(folder);
 
-    processdat(folder);
+    struct ll_list *ll = ll_create();
+    processdat(folder, ll);
+
+    struct ll_item **list;
+    int len = ll_getlist(ll, &list);
+    for(int i = 0; i < len; i++) {
+        struct ll_item *item = list[i];
+        struct datframe *dat = (struct datframe *)item->item;
+
+        printf("millis: %llu framerate: %f\n", dat->millis, dat->framerate);
+    }
+
+    ll_freeall(ll);
 
     processimg(folder, 12);
 }
