@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <ctype.h>
 #include <stdbool.h>
@@ -34,8 +36,9 @@ bool swith(char *str, char *substr) {
 }
 
 int processdat(char *folder, struct ll_list *ll) {
-    char *foldern = strdup(folder);
-    strcat(foldern, "/dat");
+    char *foldern;
+    asprintf(&foldern, "%s/dat", folder);
+
     DIR *dir = opendir(foldern);
     if(!dir) {
         printf("Failed to open dat directory!\n");
@@ -46,9 +49,8 @@ int processdat(char *folder, struct ll_list *ll) {
     while((ep = readdir(dir))) {
         if(!(swith(ep->d_name, "dat"))) continue;
 
-        char *filen = strdup(foldern);
-        strcat(filen, "/");
-        strcat(filen, ep->d_name);
+        char *filen;
+        asprintf(&filen, "%s/%s", foldern, ep->d_name);
         FILE *fp = fopen(filen, "r");
         if(!fp) return 1;
 
