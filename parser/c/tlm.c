@@ -111,15 +111,14 @@ int processimg(char *folder, int framerate) {
 
 int savejson(char *folder, char *json) {
     printf("Saving JSON...\n");
-    char *path;
-    asprintf(&path, "%s/telemetry.json", folder);
+    char path[256];
+    sprintf(path, "%s/telemetry.json", folder);
     FILE *fp = fopen(path, "wb");
     if(fp == NULL) return 1;
 
     fprintf(fp, "%s", json);
 
     fclose(fp);
-    free(path);
 
     return 0;
 }
@@ -139,9 +138,9 @@ int main(int argc, char *argv[]) {
     struct ll_list *ll = ll_create();
     processdat(folder, ll);
 
-    char *json = datlltoa(ll);
-    savejson(folder, json);
-    free(json);
+    //char *json = datlltoa(ll);
+    //savejson(folder, json);
+    //free(json);
 
     ll_freeall(ll);
 
