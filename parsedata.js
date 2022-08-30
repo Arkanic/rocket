@@ -21,12 +21,14 @@ for(let file of files) {
     const lines = dat.split("\n");
     for(let line of lines) {
         let parts = line.split(": ");
-        json[parts[0]] = isNaN(parts[1]) ? parts[1] : parseInt(parts[1]);
+        json[parts[0]] = isNaN(parts[1]) ? parts[1] : parseFloat(parts[1]);
     }
 
     data[millis] = json;
     fs.writeFileSync(path.join(jsondir, `${millis}.json`), JSON.stringify(json));
 }
+
+fs.writeFileSync(path.join(outdir, "all.json"), JSON.stringify(data));
 
 // data interpretation
 

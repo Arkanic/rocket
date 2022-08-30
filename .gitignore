@@ -3,5 +3,8 @@ parser/ll_test
 *.o
 
 sample
+data
 result
 out
+
+/interpreter/node_modules/
